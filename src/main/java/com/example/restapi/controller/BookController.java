@@ -4,6 +4,9 @@ import com.example.restapi.exception.ErrorResponse;
 import com.example.restapi.model.Book;
 import com.example.restapi.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +18,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -26,14 +28,17 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
-    @Operation(summary = "Get all books", description = "Returns a list of all books")
+    @Operation(summary = "Get all books", description = "Returns a paginated list of all books")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found all books", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Book.class)) }),
     })
     @GetMapping
-    public List<Book> getAllBooks() {
-        return bookService.getAllBooks();
+    public Page<Book> getAllBooks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return bookService.getAllBooks(pageable);
     }
 
     @Operation(summary = "Get book by ID", description = "Returns a single book by its ID")
