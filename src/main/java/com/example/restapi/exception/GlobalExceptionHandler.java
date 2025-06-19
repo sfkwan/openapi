@@ -15,4 +15,8 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
     }
 
+    @ExceptionHandler(Exception.class)
+    public @ResponseBody ErrorResponse handleAllExceptions(Exception ex) {
+        return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
+    }
 }
