@@ -1,6 +1,6 @@
 package com.example.restapi.service;
 
-import com.example.restapi.exception.BookNotFoundException;
+import com.example.restapi.exception.NotFoundException;
 import com.example.restapi.exception.UnprocessableContentException;
 import com.example.restapi.model.Book;
 import com.example.restapi.repository.BookRepository;
@@ -34,10 +34,10 @@ public class BookService {
 
     public Optional<Book> getBookById(Long id) {
         if (id > 10) {
-            throw new UnprocessableContentException("Book id 10 is not processable");
+            throw new UnprocessableContentException("Book with id greater than 10 is not processable");
         }
         if (!bookRepository.existsById(id)) {
-            throw new BookNotFoundException("Book not found with id: " + id);
+            throw new NotFoundException("Book not found with id: " + id);
         }
         return bookRepository.findById(id);
     }
@@ -50,7 +50,7 @@ public class BookService {
         if (bookRepository.existsById(id)) {
             bookRepository.deleteById(id);
         } else {
-            throw new BookNotFoundException("Book not found with id: " + id);
+            throw new NotFoundException("Book not found with id: " + id);
         }
     }
 }

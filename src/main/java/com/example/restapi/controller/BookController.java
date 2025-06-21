@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,10 +19,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Max;
 
 import java.util.Optional;
 
 @RestController
+@Validated
 @RequestMapping("/api/books")
 @Tag(name = "Books", description = "API for managing books")
 public class BookController {
@@ -35,11 +39,12 @@ public class BookController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Book.class)) }),
     })
     @GetMapping
-    public Page<Book> getAllBooks(
-            @Parameter(description = "Page number (zero-based)", example = "0") @RequestParam(defaultValue = "0") int page,
-            @Parameter(description = "Number of records per page", example = "10") @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return bookService.getAllBooks(pageable);
+    public ResponseEntity<Iterable<Book>> getAllBooks(
+            @Parameter(description = "Limit number of records", example = "10") @RequestParam() int limit,
+            @Parameter(description = "Offset for records", example = "0") @RequestParam(defaultValue = "0") @Min(0) @Max(100) int offset) {
+
+        Pageable pageable = PageRequest.of(offset / limit, limit);
+        return ResponseEntity.ok(bookService.getAllBooks(pageable));
     }
 
     @Operation(summary = "Get book by ID", description = "Returns a single book by its ID")

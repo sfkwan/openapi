@@ -12,8 +12,8 @@ public class ErrorResponse {
     private int code;
     private String message;
 
-    public ErrorResponse(String message) {
-        super();
-        this.message = message;
-    }
+    // public ErrorResponse(String message) {
+    // super();
+    // this.message = message;
+    // }
 }
