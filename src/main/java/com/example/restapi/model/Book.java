@@ -7,12 +7,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
+import org.springframework.context.annotation.Primary;
+
 import jakarta.persistence.Column;
 
 @Entity
 @Table(name = "books")
 public class Book {
 
+    /**
+     * Primary key for Book entity.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -46,7 +52,7 @@ public class Book {
     }
 
     // public void setId(Long id) {
-    //     this.id = id;
+    // this.id = id;
     // }
 
     public String getTitle() {
