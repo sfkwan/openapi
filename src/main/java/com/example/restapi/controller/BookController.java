@@ -1,6 +1,6 @@
 package com.example.restapi.controller;
 
-import com.example.restapi.exception.ErrorResponse;
+import com.example.restapi.annotation.VerifyToken;
 import com.example.restapi.model.Book;
 import com.example.restapi.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +37,7 @@ public class BookController {
             @ApiResponse(responseCode = "200", description = "Found all books", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Book.class)) }),
     })
+    @VerifyToken
     @GetMapping
     public ResponseEntity<Iterable<Book>> getAllBooks(
             @Parameter(description = "Limit number of records", example = "10") @RequestParam() int limit,
@@ -64,6 +65,12 @@ public class BookController {
     })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    /**
+     * Creates a new book entry in the system.
+     *
+     * @param book the book to be created
+     * @return the created Book object
+     */
     public Book createBook(@RequestBody Book book) {
         return bookService.createBook(book);
     }

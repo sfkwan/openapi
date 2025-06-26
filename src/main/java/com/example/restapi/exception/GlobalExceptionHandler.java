@@ -33,6 +33,14 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(ex.getCode(), ex.getMessage());
     }
 
+    @ExceptionHandler(AuthenticationException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ApiResponse(responseCode = "401", description = "UnAuthenticated", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+
+    public @ResponseBody ErrorResponse handleException(AuthenticationException ex) {
+        return new ErrorResponse(ex.getCode(), ex.getMessage());
+    }
+
     @ExceptionHandler(MissingServletRequestParameterException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
@@ -53,8 +61,8 @@ public class GlobalExceptionHandler {
     @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     public @ResponseBody ErrorResponse handleException(Exception ex) {
         logger.error("Unhandled exception occurred: {}", ex.getMessage());
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.toString(),
+        return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.toString(),
                 ex.getMessage());
-        return errorResponse;
     }
+
 }

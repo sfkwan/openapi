@@ -8,8 +8,6 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-import org.springframework.context.annotation.Primary;
-
 import jakarta.persistence.Column;
 
 @Entity

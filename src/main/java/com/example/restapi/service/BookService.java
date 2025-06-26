@@ -38,7 +38,7 @@ public class BookService {
                     "Book with id greater than 10 is not processable");
         }
         if (!bookRepository.existsById(id)) {
-            throw new NotFoundException("BOOK-NotFound-0001", "Book not found with id: " + id);
+            throw new NotFoundException("BOOK-NotFound-0401", "Book not found with id: " + id);
         }
         return bookRepository.findById(id);
     }
@@ -51,7 +51,7 @@ public class BookService {
         if (bookRepository.existsById(id)) {
             bookRepository.deleteById(id);
         } else {
-            throw new NotFoundException("BOOK-NotFound-0001", "Book not found with id: " + id);
+            throw new NotFoundException("BOOK-NotFound-0401", "Book not found with id: " + id);
         }
     }
 }
