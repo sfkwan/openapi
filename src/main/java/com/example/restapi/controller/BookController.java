@@ -4,6 +4,7 @@ import com.example.restapi.annotation.VerifyToken;
 import com.example.restapi.model.Book;
 import com.example.restapi.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -40,8 +41,9 @@ public class BookController {
     @VerifyToken
     @GetMapping
     public ResponseEntity<Iterable<Book>> getAllBooks(
-            @Parameter(description = "Limit number of records", example = "10") @RequestParam() int limit,
-            @Parameter(description = "Offset for records", example = "0") @RequestParam(defaultValue = "0") @Min(0) @Max(100) int offset) {
+            // The maximum number of records to return in the response (pagination limit)
+            @Parameter(description = "Limit number of records (minimum: 0, maximum: 50)", example = "10", required = false) @RequestParam(defaultValue = "10") @Min(0) @Max(50) int limit,
+            @Parameter(description = "Skip records (minimum: 0, maximum: 1000)", example = "0", required = false) @RequestParam(defaultValue = "0") @Min(0) @Max(1000) int offset) {
 
         Pageable pageable = PageRequest.of(offset / limit, limit);
         return ResponseEntity.ok(bookService.getAllBooks(pageable));
