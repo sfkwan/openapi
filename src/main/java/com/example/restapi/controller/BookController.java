@@ -4,7 +4,6 @@ import com.example.restapi.annotation.VerifyToken;
 import com.example.restapi.model.Book;
 import com.example.restapi.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -19,6 +18,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Max;
 
@@ -28,12 +28,13 @@ import java.util.Optional;
 @Validated
 @RequestMapping("/api/books")
 @Tag(name = "Books", description = "API for managing books")
+@SecurityRequirement(name = "bearerAuth")
 public class BookController {
 
     @Autowired
     private BookService bookService;
 
-    @Operation(summary = "Get all books", description = "Returns a paginated list of all books")
+    @Operation(summary = "Get all books", description = "Returns a paginated list of all books", security = @io.swagger.v3.oas.annotations.security.SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found all books", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Book.class)) }),
@@ -49,7 +50,7 @@ public class BookController {
         return ResponseEntity.ok(bookService.getAllBooks(pageable));
     }
 
-    @Operation(summary = "Get book by ID", description = "Returns a single book by its ID")
+    @Operation(summary = "Get book by ID", description = "Returns a single book by its ID", security = @io.swagger.v3.oas.annotations.security.SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found the book", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Book.class)) }),
@@ -60,7 +61,7 @@ public class BookController {
         return book.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @Operation(summary = "Create a new book", description = "Creates a new book entry")
+    @Operation(summary = "Create a new book", description = "Creates a new book entry", security = @io.swagger.v3.oas.annotations.security.SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Book created", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Book.class)) })
@@ -77,7 +78,7 @@ public class BookController {
         return bookService.createBook(book);
     }
 
-    @Operation(summary = "Delete a book", description = "Deletes a book by its ID")
+    @Operation(summary = "Delete a book", description = "Deletes a book by its ID", security = @io.swagger.v3.oas.annotations.security.SecurityRequirement(name = "bearerAuth"))
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
