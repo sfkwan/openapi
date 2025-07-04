@@ -34,7 +34,7 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
-    @Operation(summary = "Get all books", description = "Returns a paginated list of all books", security = @io.swagger.v3.oas.annotations.security.SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Get all books", description = "Returns a paginated list of all books")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found all books", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Book.class)) }),
@@ -50,7 +50,7 @@ public class BookController {
         return ResponseEntity.ok(bookService.getAllBooks(pageable));
     }
 
-    @Operation(summary = "Get book by ID", description = "Returns a single book by its ID", security = @io.swagger.v3.oas.annotations.security.SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Get book by ID", description = "Returns a single book by its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found the book", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Book.class)) }),
@@ -61,7 +61,7 @@ public class BookController {
         return book.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @Operation(summary = "Create a new book", description = "Creates a new book entry", security = @io.swagger.v3.oas.annotations.security.SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Create a new book", description = "Creates a new book entry")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Book created", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Book.class)) })
@@ -78,7 +78,7 @@ public class BookController {
         return bookService.createBook(book);
     }
 
-    @Operation(summary = "Delete a book", description = "Deletes a book by its ID", security = @io.swagger.v3.oas.annotations.security.SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Delete a book", description = "Deletes a book by its ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
