@@ -29,6 +29,8 @@ import java.util.Optional;
 @RequestMapping("/api/books")
 @Tag(name = "Books", description = "API for managing books")
 @SecurityRequirement(name = "bearerAuth")
+@SecurityRequirement(name = "cookieAuth")
+
 public class BookController {
 
     @Autowired
