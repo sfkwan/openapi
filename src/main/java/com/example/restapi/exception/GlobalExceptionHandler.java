@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
@@ -52,7 +53,13 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     public @ResponseBody ErrorResponse handleException(ConstraintViolationException ex) {
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.toString(), ex.getMessage());
+    }
 
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+    public @ResponseBody ErrorResponse handleException(MethodArgumentTypeMismatchException ex) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.toString(), ex.getMessage());
     }
 
