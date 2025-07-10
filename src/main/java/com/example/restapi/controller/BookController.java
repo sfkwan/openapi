@@ -41,7 +41,7 @@ public class BookController {
     private BookService bookService;
 
     public enum BookStatus {
-        DRAFT, SUBMITTED, PENDING_FOR_APPROVAL
+        DRAFT, SUBMITTED, PENDING_FOR_APPROVAL, COMPLETED
     }
 
     @Operation(summary = "Get all books", description = "Returns a paginated list of all books")
@@ -49,15 +49,16 @@ public class BookController {
             @ApiResponse(responseCode = "200", description = "Found all books", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Book.class)) }),
     })
-    @VerifyToken
+    // @VerifyToken
     @GetMapping
     public ResponseEntity<Iterable<Book>> getAllBooks(
             // The maximum number of records to return in the response (pagination limit)
             @Parameter(description = "Limit number of records (minimum: 0, maximum: 50)", example = "10", required = false) @RequestParam(defaultValue = "10") @Min(0) @Max(50) int limit,
             @Parameter(description = "Skip records (minimum: 0, maximum: 1000)", example = "0", required = false) @RequestParam(defaultValue = "0") @Min(0) @Max(1000) int offset,
-            @Parameter(description = "Filter by book status. Accepts multiple values.", example = "draft", required = false, schema = @Schema(type = "array", allowableValues = {
-                    "draft", "submitted",
-                    "pending_for_approval" })) @RequestParam(name = "status", required = false) List<BookStatus> status) {
+            @Parameter(description = "Filter by book status. Accepts multiple values.", example = "[\"DRAFT\",\"SUBMITTED\"]", required = false, schema = @Schema(type = "array", allowableValues = {
+                    "DRAFT", "SUBMITTED",
+                    "PENDING_FOR_APPROVAL",
+                    "COMPLETED" })) @RequestParam(name = "status", required = false) List<BookStatus> status) {
 
         Pageable pageable = PageRequest.of(offset / limit, limit);
         log.info("Fetching books with limit: {}, offset: {}, status: {}", limit, offset, status);
