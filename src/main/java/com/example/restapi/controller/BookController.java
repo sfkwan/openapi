@@ -3,6 +3,7 @@ package com.example.restapi.controller;
 import com.example.restapi.annotation.VerifyToken;
 import com.example.restapi.model.Book;
 import com.example.restapi.service.BookService;
+import com.example.restapi.dto.PaginatedBaseResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -40,30 +41,35 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
-    public enum BookStatus {
+    public enum SubmissionStatus {
         DRAFT, SUBMITTED, PENDING_FOR_APPROVAL, COMPLETED
     }
 
-    @Operation(summary = "Get all books", description = "Returns a paginated list of all books")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found all books", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = Book.class)) }),
-    })
+    @Operation(summary = "Get all books", description = "Returns a list of books with pagination and filtering")
     // @VerifyToken
     @GetMapping
-    public ResponseEntity<Iterable<Book>> getAllBooks(
+    public ResponseEntity<PaginatedBaseResponse<Book>> getAllBooks(
             // The maximum number of records to return in the response (pagination limit)
             @Parameter(description = "Limit number of records (minimum: 0, maximum: 50)", example = "10", required = false) @RequestParam(defaultValue = "10") @Min(0) @Max(50) int limit,
             @Parameter(description = "Skip records (minimum: 0, maximum: 1000)", example = "0", required = false) @RequestParam(defaultValue = "0") @Min(0) @Max(1000) int offset,
             @Parameter(description = "Filter by book status. Accepts multiple values.", example = "[\"DRAFT\",\"SUBMITTED\"]", required = false, schema = @Schema(type = "array", allowableValues = {
                     "DRAFT", "SUBMITTED",
                     "PENDING_FOR_APPROVAL",
-                    "COMPLETED" })) @RequestParam(name = "status", required = false) List<BookStatus> status) {
+                    "COMPLETED" })) @RequestParam(name = "status", required = false) List<SubmissionStatus> status) {
 
         Pageable pageable = PageRequest.of(offset / limit, limit);
         log.info("Fetching books with limit: {}, offset: {}, status: {}", limit, offset, status);
-        // You can use the 'status' parameter in your service as needed
-        return ResponseEntity.ok(bookService.getAllBooks(pageable));
+
+        // Fetch paginated books and total count
+        var page = bookService.getAllBooks(pageable);
+        log.info("Fetched {} books", page);
+        var response = new PaginatedBaseResponse<>(
+                page.getTotalElements(),
+                offset,
+                limit,
+
+                page.getContent());
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Get book by ID", description = "Returns a single book by its ID")
