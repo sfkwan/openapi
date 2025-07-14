@@ -3,7 +3,7 @@ package com.example.restapi.controller;
 import com.example.restapi.annotation.VerifyToken;
 import com.example.restapi.model.Book;
 import com.example.restapi.service.BookService;
-import com.example.restapi.dto.PaginatedBaseResponse;
+import com.example.restapi.dto.PaginatedBookResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -46,9 +46,15 @@ public class BookController {
     }
 
     @Operation(summary = "Get all books", description = "Returns a list of books with pagination and filtering")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved books", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = PaginatedBookResponse.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid request parameters", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
+    })
     // @VerifyToken
     @GetMapping
-    public ResponseEntity<PaginatedBaseResponse<Book>> getAllBooks(
+    public ResponseEntity<PaginatedBookResponse> getAllBooks(
             // The maximum number of records to return in the response (pagination limit)
             @Parameter(description = "Limit number of records (minimum: 0, maximum: 50)", example = "10", required = false) @RequestParam(defaultValue = "10") @Min(0) @Max(50) int limit,
             @Parameter(description = "Skip records (minimum: 0, maximum: 1000)", example = "0", required = false) @RequestParam(defaultValue = "0") @Min(0) @Max(1000) int offset,
@@ -63,7 +69,7 @@ public class BookController {
         // Fetch paginated books and total count
         var page = bookService.getAllBooks(pageable);
         log.info("Fetched {} books", page);
-        var response = new PaginatedBaseResponse<>(
+        var response = new PaginatedBookResponse(
                 page.getTotalElements(),
                 offset,
                 limit,
