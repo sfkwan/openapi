@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -20,6 +21,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class GlobalExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    @Hidden()
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
@@ -27,6 +29,7 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(ex.getCode(), ex.getMessage());
     }
 
+    @Hidden()
     @ExceptionHandler(UnprocessableContentException.class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     @ApiResponse(responseCode = "422", description = "Unprocessable Entity", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
@@ -34,6 +37,7 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(ex.getCode(), ex.getMessage());
     }
 
+    @Hidden()
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ApiResponse(responseCode = "401", description = "UnAuthenticated", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
